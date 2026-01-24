@@ -1,12 +1,11 @@
-import Job from '../models/job.model.js';
+import { Job }  from '../Models/job.model.js';
 
 
 export const postJob = async (req, res) => {
     try {
-        const { title, description, company, location, salary, experience } = req.body;
+        const { title, description, requirements, salary, company, location, jobType, experience, position, companyId } = req.body;
         const userId = req.user.id;
-        const companyId = req.user.companyId;
-        if (!title || !description || !company || !location || !salary || !experience) {
+        if (!title || !description || !company || !location || !salary || !experience || !companyId || !position || !jobType || !requirements) {
             return res.status(400).json({ 
                 message: "Missing required fields",
                 success: false 
@@ -20,7 +19,10 @@ export const postJob = async (req, res) => {
             salary,
             experience,
             postedBy: userId,
-            postedAt: new Date()
+            postedAt: new Date(),
+            requirements: requirements.split(','),
+            jobType,
+            position
         });
         return res.status(201).json({
             message: "Job posted successfully",
@@ -42,7 +44,7 @@ export const getAllJobs = async (req, res) => {
                 { description: { $regex: Keywords, $options: 'i' } }
             ]
         };
-        const jobs = await Job.find(query).populate('company', 'name location').exec();
+        const jobs = await Job.find(query).populate({path : 'company'}).sort({ createdAt: -1 });
         if(!jobs){
             return res.status(404).json({
                 message: "No jobs found",
