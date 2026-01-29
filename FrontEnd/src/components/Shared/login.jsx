@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import Navbar from './navbar'
-import { Label } from '@radix-ui/react-label'
-import { RadioGroup } from '@radix-ui/react-radio-group'
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
+import axios from "axios"
+import { useNavigate, Link } from 'react-router-dom'
+import { Button } from '../ui/button'
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import './css/signup.css'
-import { Link } from 'react-router-dom'
-import { Button } from '../ui/button'
+
 
 function Login() {
+
+  const navigate = useNavigate();
+
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -16,69 +19,96 @@ function Login() {
   });
 
   const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value })
-  }
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
-  }
+
+    try {
+      const res = await axios.post(
+        `${USER_API_END_POINT}/login`,
+        input,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (res.data.success) {
+        navigate("/");
+        toast.success(res.data.message);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(input);
 
   return (
     <div>
       <Navbar />
+
       <form onSubmit={submitHandler}>
         <div className="signup-form">
-          <h1 className=''>Log In</h1>
+          <h1>Log In</h1>
+
           <Field>
-            <FieldLabel >Email</FieldLabel>
+            <FieldLabel>Email</FieldLabel>
             <Input
               type="email"
-              value={input.email}
               name="email"
+              value={input.email}
               onChange={changeEventHandler}
               placeholder="Enter your email"
             />
-            <FieldLabel >Password</FieldLabel>
+
+            <FieldLabel>Password</FieldLabel>
             <Input
               type="password"
-              value={input.password}
               name="password"
+              value={input.password}
               onChange={changeEventHandler}
               placeholder="Enter your password"
             />
-            <RadioGroup defaultValue="comfortable" className="w-fit flex flex-row gap-6">
-              <FieldLabel >Role</FieldLabel>
-              <div className="flex flex-row gap-6">
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="radio"
-                    name="role"
-                    value="student"
-                    checked={input.role == 'student'}
-                    onChange={changeEventHandler}
-                  />
-                  <Label htmlFor="r2">Student</Label>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="radio"
-                    name="role"
-                    value="admin"
-                    checked={input.role == 'admin'}
-                    onChange={changeEventHandler}
-                  />
-                  <Label htmlFor="r3">Admin</Label>
-                </div>
-              </div>
-            </RadioGroup>
-            <Button>Log In</Button>
+
+            {/* RADIO BUTTONS */}
+            <FieldLabel>Role</FieldLabel>
+            <div className="flex gap-6">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="role"
+                  value="student"
+                  checked={input.role === "student"}
+                  onChange={changeEventHandler}
+                />
+                Student
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="role"
+                  value="admin"
+                  checked={input.role === "admin"}
+                  onChange={changeEventHandler}
+                />
+                Admin
+              </label>
+            </div>
+
+            <Button type="submit">Log In</Button>
           </Field>
-          <span>Don't have account? <Link to="/signup">Register Now</Link></span>
+
+          <span>
+            Don't have account? <Link to="/signup">Register Now</Link>
+          </span>
         </div>
-      </form >
+      </form>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
