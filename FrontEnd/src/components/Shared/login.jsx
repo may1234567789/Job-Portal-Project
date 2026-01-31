@@ -5,10 +5,12 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Button } from '../ui/button'
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { USER_API_END_POINT } from '@/utils/constant'
+import { toast } from 'sonner'
 import './css/signup.css'
 
 
-function Login() {
+const Login=() =>{
 
   const navigate = useNavigate();
 
@@ -30,17 +32,29 @@ function Login() {
         `${USER_API_END_POINT}/login`,
         input,
         {
-          withCredentials: true,
-        }
-      );
+          headers:{
+          "Content-Type": "application/json"
+        },
+        withCredentials: true,
+    });
 
-      if (res.data.success) {
-        navigate("/");
-        toast.success(res.data.message);
+      console.log("login response:", res);
+
+      const ok = res?.data?.success || res?.data?.sucess;
+
+      if (ok) {
+        console.log('login successful, navigating to /');
+        navigate("/", { replace: true });
+        toast.success(res.data.message || "Logged in");
+      } else {
+        const msg = res?.data?.message || "Login failed";
+        toast.error(msg);
       }
 
     } catch (error) {
       console.log(error);
+      const msg = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error(msg);
     }
   };
 

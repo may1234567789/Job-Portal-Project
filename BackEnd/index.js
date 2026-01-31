@@ -3,15 +3,15 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./utils/db.js";
-import userRoutes from "./Routes/usera.route.js";
+import userRoutes from "./Routes/user.route.js";
 import companyRoutes from "./Routes/company.route.js";
 import jobRoutes from "./Routes/job.route.js";
 import applicationRoutes from "./Routes/application.route.js";
 
-dotenv.config({});
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 
 function signUp() {
   const [input, setInput] = useState({
-    fullName: "",
+    username: "",
     email: "",
     phoneNumber: "",
     password : "",
@@ -34,7 +34,7 @@ function signUp() {
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("fullName",input.fullName);
+    formData.append("username",input.username);
     formData.append("email",input.email);
     formData.append("password",input.password);
     formData.append("phoneNumber",input.phoneNumber);
@@ -55,6 +55,7 @@ function signUp() {
       }
     } catch (error){
         console.log(error)
+        toast.error(error.response.data.message)
     }
   }
   return (
@@ -67,8 +68,8 @@ function signUp() {
             <FieldLabel >Name</FieldLabel>
             <Input
               type="text"
-              value={input.fullName}
-              name="fullName"
+              value={input.username}
+              name="username"
               onChange={changeEventHandler}
               placeholder="Enter your username"
             />
