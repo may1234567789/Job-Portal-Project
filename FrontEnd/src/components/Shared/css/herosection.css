@@ -1,0 +1,52 @@
+.heroContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.heroHeading h1{
+    margin-top: 120px;
+    font-size: 70px;
+    color: black;
+}
+
+.heroPara{
+    font-size: 40px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.hero {
+    text-align: center;
+}
+
+.input{
+    width: 600px;
+    border: 3px solid blue;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.searchWrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin-top:20px;
+}
+
+.searchBtn{
+    background:#1e40af;
+    color:#fff;
+    border:none;
+    padding:10px 12px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+.searchBtn svg{
+    width:20px;
+    height:20px;
+}

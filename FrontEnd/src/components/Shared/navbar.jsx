@@ -19,10 +19,9 @@ function Navbar() {
       {/* Nav options */}
       <div className="options">
         <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#news">News</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li><a href="#about">About</a></li>
+          <li><Link to='/'><a>Home</a></Link></li>
+          <li><Link to='/browse'><a>Browse</a></Link></li>
+          <li><Link to='/job'><a>Job</a></Link></li>
         </ul>
       </div>
 

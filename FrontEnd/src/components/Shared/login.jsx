@@ -7,12 +7,16 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/Redux/authslice'
 import './css/signup.css'
 
+const Login = () => {
 
-const Login=() =>{
-
+  const { Loading } = useSelector(store => store.auth)
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [input, setInput] = useState({
     email: "",
@@ -28,15 +32,16 @@ const Login=() =>{
     e.preventDefault();
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(
         `${USER_API_END_POINT}/login`,
         input,
         {
-          headers:{
-          "Content-Type": "application/json"
-        },
-        withCredentials: true,
-    });
+          headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true,
+        });
 
       console.log("login response:", res);
 
@@ -55,8 +60,10 @@ const Login=() =>{
       console.log(error);
       const msg = error?.response?.data?.message || error?.message || "An error occurred";
       toast.error(msg);
+    } finally {
+      dispatch(setLoading(false))
     }
-  };
+  }
 
   console.log(input);
 
@@ -112,8 +119,10 @@ const Login=() =>{
                 Admin
               </label>
             </div>
-
-            <Button type="submit">Log In</Button>
+            {
+              Loading ? <Button>Please Wait<Loader2 className='mr-2 h-4 w-4 animate-spin'></Loader2></Button> : <Button type="submit">Log In</Button>
+            }
+            
           </Field>
 
           <span>

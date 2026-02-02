@@ -10,17 +10,22 @@ import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/Redux/authslice'
 
 function signUp() {
   const [input, setInput] = useState({
     username: "",
     email: "",
     phoneNumber: "",
-    password : "",
+    password: "",
     role: "",
     file: ""
   });
 
+  const { Loading } = useSelector(store => store.auth)
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
@@ -34,28 +39,31 @@ function signUp() {
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("username",input.username);
-    formData.append("email",input.email);
-    formData.append("password",input.password);
-    formData.append("phoneNumber",input.phoneNumber);
-    formData.append("role",input.role);
-    if(input.file){
-      formData.append("file",input.file);
+    formData.append("username", input.username);
+    formData.append("email", input.email);
+    formData.append("password", input.password);
+    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("role", input.role);
+    if (input.file) {
+      formData.append("file", input.file);
     }
-    try{
+    try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
-        headers:{
-          "content-type" : "multipart/form-data"
+        headers: {
+          "content-type": "multipart/form-data"
         },
-        withCredentials:true,
+        withCredentials: true,
       });
-      if(res.data.sucess){
+      if (res.data.sucess) {
         navigate("/login")
         toast.success(res.data.message)
       }
-    } catch (error){
-        console.log(error)
-        toast.error(error.response.data.message)
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message)
+    } finally {
+      dispatch(setLoading(false))
     }
   }
   return (
@@ -129,8 +137,9 @@ function signUp() {
                 </div>
               </div>
             </RadioGroup>
-
-            <Button>Sign Up</Button>
+            {
+              Loading ? <Button>Please Wait<Loader2 className='mr-2 h-4 w-4 animate-spin'></Loader2></Button> : <Button type="submit">Sign Up</Button>
+            }
             <span>Already have an account <Link to="/login" >Login Now</Link></span>
           </Field>
         </div>

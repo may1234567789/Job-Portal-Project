@@ -1,0 +1,90 @@
+#cssportal-grid {
+	display: grid;
+	grid-template-rows: repeat(3, 1fr);
+	grid-template-columns: repeat(3, 1fr);
+	gap: 30px;
+	width: 80%;
+	height: 100%;
+}
+
+.latestjob-content{
+	margin: 100px;
+}
+
+.latestjob-p{
+	font-size: 50px;
+	margin-bottom: 40px;
+	font-family: 'Times New Roman', Times, serif;
+	font-weight: bold;
+}
+
+/* Card styles for latest jobs */
+.latestjob-card{
+	border: 1px solid #e6e6e6;
+	background: #ffffff;
+	padding: 18px;
+	border-radius: 10px;
+	box-shadow: 0 2px 6px rgba(16,24,40,0.04);
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+	max-width: 680px;
+}
+.latestjob-card:hover{
+	transform: translateY(-6px);
+	box-shadow: 0 8px 24px rgba(16,24,40,0.08);
+}
+.latestjob-card-header{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+.latestjob-company{
+	display: flex;
+	flex-direction: column;
+}
+.latestjob-company-name{
+	font-weight: 700;
+	color: #0f172a;
+	margin: 0;
+}
+.latestjob-company-place{
+	font-size: 13px;
+	color: #6b7280;
+	margin: 0;
+}
+.latestjob-title{
+	font-size: 18px;
+	font-weight: 800;
+	margin: 0;
+	color: #0b1220;
+}
+.latestjob-desc{
+	color: #334155;
+	margin: 10px 0 14px 0;
+	line-height: 1.45;
+}
+.latestjob-card-footer{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+.latestjob-badges{
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.latestjob-apply{
+	background:rgb(35, 35, 253);
+	color: #ffffff;
+	border: none;
+	padding: 8px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 600;
+}
+.latestjob-apply:hover{
+	background: #081029;
+}
+
