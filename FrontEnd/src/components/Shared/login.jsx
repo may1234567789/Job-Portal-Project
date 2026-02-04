@@ -9,7 +9,7 @@ import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from '@/Redux/authslice'
+import { setLoading, setUser } from '@/Redux/authslice'
 import './css/signup.css'
 
 const Login = () => {
@@ -49,6 +49,7 @@ const Login = () => {
 
       if (ok) {
         console.log('login successful, navigating to /');
+        dispatch(setUser(res.data.user))
         navigate("/", { replace: true });
         toast.success(res.data.message || "Logged in");
       } else {
