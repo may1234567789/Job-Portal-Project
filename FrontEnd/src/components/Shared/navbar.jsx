@@ -5,9 +5,10 @@ import logo from '../../images/233377451.png'
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger, } from "@/components/ui/popover"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useSelector } from 'react-redux'
 
 function Navbar() {
-  const user = false;
+  const {user} = useSelector(store=>store.auth);
   return (
     <div className="navbar">
 
@@ -59,7 +60,7 @@ function Navbar() {
                 </div>
 
                 <div className="user-buttons flex flex-col gap-2 mt-4">
-                  <Button variant="link">View Profile</Button>
+                  <Button variant="link"><Link to='/profile'>View Profile</Link></Button>
                   <Button variant="destructive">Logout</Button>
                 </div>
               </PopoverContent>
