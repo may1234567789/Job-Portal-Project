@@ -6,6 +6,8 @@ import SignUp from './components/Shared/signup.jsx'
 import Job from './components/Shared/job.jsx'
 import Browse from './components/Shared/browse.jsx'
 import './App.css'
+import Profile from './components/Shared/profile.jsx';
+import JobDescription from './components/Shared/jobdescription.jsx';
 
 const appRouter = createBrowserRouter([
   {
@@ -27,6 +29,14 @@ const appRouter = createBrowserRouter([
   {
     "path": "/browse",
     "element": <Browse />
+  },
+  {
+    "path": "/profile",
+    "element": <Profile />
+  },
+  {
+    "path": "/description/:id",
+    "element": <JobDescription />
   }
 ]);
 

@@ -1,8 +1,12 @@
 import React from 'react'
 import { Badge } from 'lucide-react';
 import './css/singlejob.css'
+import { Button } from '../ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const SingleJob = () => {
+  const navigate = useNavigate();
+  const jobId = "ewhfwwef"
   return (
     <div>
     <article className="job-card">
@@ -38,7 +42,7 @@ const SingleJob = () => {
           <Badge>Senior</Badge>
         </div>
 
-        <button className="apply-btn">Apply</button>
+        <Button onClick={() => navigate(`/description/${jobId}`)}>Details</Button>
       </div>
     </article>
 
