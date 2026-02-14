@@ -1,6 +1,8 @@
 import User from '../Models/user.model.js';
 import bcrypt from 'bcryptjs';
+import { get } from 'http';
 import jwt from 'jsonwebtoken';
+import getDataUri from '../utils/datauri.js';
 
 export const register = async (req, res) => {
     try {
@@ -96,6 +98,10 @@ export const updateProfile = async (req, res) => {
                 message: 'All fields are required.', 
                 sucess: false });
         };
+        const file = req.file;
+        const fileUrl = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUrl.content);
+        
         const skillArray = skills.split(',');
         const userId = req.user.id;
 
@@ -110,6 +116,10 @@ export const updateProfile = async (req, res) => {
         user.phoneNumber = phoneNumber;
         user.profile.bio = bio;
         user.profile.skills = skillArray;
+        if(cloudResponse){
+            user.profile.resume = cloudResponse.secure_url;
+            user.profile.resumeOriginalName = file.originalname;
+        }
 
         await user.save();
         user = {

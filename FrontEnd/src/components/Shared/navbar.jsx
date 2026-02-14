@@ -52,9 +52,9 @@ function Navbar() {
                   </Avatar>
 
                   <PopoverHeader>
-                    <PopoverTitle>User Profile</PopoverTitle>
+                    <PopoverTitle>{user?.username}</PopoverTitle>
                     <PopoverDescription>
-                      Manage your account
+                      {user?.email}
                     </PopoverDescription>
                   </PopoverHeader>
                 </div>
