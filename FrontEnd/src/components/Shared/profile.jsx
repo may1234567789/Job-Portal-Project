@@ -1,4 +1,4 @@
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
@@ -7,11 +7,18 @@ import UpdateProfileDialog from './updateprofile'
 import Navbar from './navbar'
 import { useSelector } from 'react-redux'
 
-const skills = ["Html", "Css", "Javascript", "Reactjs"]
-const isResume = true;
 const Profile = () => {
-    const [open, setOpen] = useState(false);
-    const { user } = useSelector(store => store.auth);
+    const [open, setOpen] = useState(false)
+    const { user } = useSelector(store => store.auth)
+
+    const skills = Array.isArray(user?.profile?.skills)
+        ? user.profile.skills
+        : typeof user?.profile?.skills === 'string'
+            ? user.profile.skills.split(',').map(skill => skill.trim()).filter(Boolean)
+            : []
+
+    const isResume = Boolean(user?.profile?.resume)
+
     return (
         <div>
             <Navbar />
@@ -38,6 +45,11 @@ const Profile = () => {
                             <li><strong>Phone:</strong> {user?.phoneNumber}</li>
                             <li><strong>Location:</strong> New Delhi, India</li>
                             <li><strong>Experience:</strong> Fresher</li>
+                            <li><Label><strong>Resume</strong></Label></li>
+                            {
+                                isResume ? <a target='blank' href={user?.profile?.resume} className='text-blue-500 w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a> : <span>NA</span>
+                            }
+
                         </ul>
                     </div>
 
@@ -64,12 +76,6 @@ const Profile = () => {
                                         : <span>NA</span>
                                 }
                             </div>
-                        </div>
-                        <div className='grid w-full max-w-sm items-center gap-1.5'>
-                            <Label>Resume</Label>
-                            {
-                                isResume ? <a target='blank' href={user?.profile?.resume} className='text-blue-500 w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a> : <span>NA</span>
-                            }
                         </div>
 
 

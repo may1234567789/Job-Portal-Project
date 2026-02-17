@@ -24,6 +24,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     phoneNumber: '',
     bio: '',
     skills: '',
+    file: null,
   })
 
   const dispatch = useDispatch()
@@ -39,6 +40,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         skills: Array.isArray(user?.profile?.skills)
           ? user.profile.skills.join(', ')
           : user?.profile?.skills || '',
+        file: null,
       })
     }
   }, [user, open])
@@ -55,21 +57,20 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const payload = {
-      username: input.username,
-      email: input.email,
-      phoneNumber: input.phoneNumber,
-      bio: input.bio,
-      skills: input.skills,
+    const payload = new FormData()
+    payload.append('username', input.username)
+    payload.append('email', input.email)
+    payload.append('phoneNumber', input.phoneNumber)
+    payload.append('bio', input.bio)
+    payload.append('skills', input.skills)
+    if (input.file) {
+      payload.append('file', input.file)
     }
     
     setLoading(true)
 
     try {
       const res = await axios.post(`${USER_API_END_POINT}/profile/update`, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
         withCredentials: true,
       })
       

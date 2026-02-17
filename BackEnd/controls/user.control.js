@@ -3,9 +3,15 @@ import bcrypt from 'bcryptjs';
 import { get } from 'http';
 import jwt from 'jsonwebtoken';
 import getDataUri from '../utils/datauri.js';
+import cloudinary from '../utils/cloundary.js';
 
 export const register = async (req, res) => {
     try {
+        console.log('REGISTER request received');
+        console.log('req.body keys:', Object.keys(req.body || {}));
+        console.log('req.body:', req.body);
+        console.log('req.file present:', !!req.file);
+        if (req.file) console.log('req.file.originalname:', req.file.originalname);
         if (!req.body) {
             return res.status(400).json({ message: 'Request body is required.' });
         }
@@ -14,17 +20,42 @@ export const register = async (req, res) => {
         if (!username || !password || !email || !phoneNumber || !role) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
-        const user = await User.findOne({ $or: [{ email }, { username }] });
+        // Normalize inputs to avoid duplicates due to casing/whitespace
+        const normalizedEmail = String(email || '').toLowerCase().trim();
+        const normalizedUsername = String(username || '').trim();
+        const phone = Number(phoneNumber);
+        console.log('normalizedEmail:', normalizedEmail);
+        console.log('normalizedUsername:', normalizedUsername);
+
+        // Check for existing user first to avoid uploading files unnecessarily
+        const user = await User.findOne({ $or: [{ email: normalizedEmail }, { username: normalizedUsername }] });
+        console.log('existing user found:', !!user);
+        if (user) {
+            // log minimal user info for debugging
+            console.log('found user:', { _id: user._id, email: user.email, username: user.username, phoneNumber: user.phoneNumber });
+        }
         if (user) {
             return res.status(400).json({ message: 'User already exists.',sucess:false });
         }
+        // Handle file upload after confirming user doesn't exist
+        const file = req.file;
+        let profilePhotoUrl = null;
+        if (file) {
+            const fileUri = getDataUri(file);
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            profilePhotoUrl = cloudResponse.secure_url;
+        }
+
         const passwordHash = await bcrypt.hash(password, 10);
         await User.create({
-            username,
+            username: normalizedUsername,
             password: passwordHash,
-            email,
-            phoneNumber,
-            role    
+            email: normalizedEmail,
+            phoneNumber: phone,
+            role,
+            profile:{
+                profilePicture: profilePhotoUrl,
+            }
         });
         return  res.status(201).json({ message: 'User registered successfully.',sucess:true });
     } catch (error) {
@@ -99,8 +130,11 @@ export const updateProfile = async (req, res) => {
                 sucess: false });
         };
         const file = req.file;
-        const fileUrl = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUrl.content);
+        let cloudResponse = null;
+        if (file) {
+            const fileUrl = getDataUri(file);
+            cloudResponse = await cloudinary.uploader.upload(fileUrl.content);
+        }
         
         const skillArray = skills.split(',');
         const userId = req.user.id;
@@ -116,7 +150,7 @@ export const updateProfile = async (req, res) => {
         user.phoneNumber = phoneNumber;
         user.profile.bio = bio;
         user.profile.skills = skillArray;
-        if(cloudResponse){
+        if(cloudResponse && file){
             user.profile.resume = cloudResponse.secure_url;
             user.profile.resumeOriginalName = file.originalname;
         }

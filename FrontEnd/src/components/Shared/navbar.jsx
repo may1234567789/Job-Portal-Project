@@ -1,23 +1,46 @@
 import React from 'react'
 import './css/navbar.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../images/233377451.png'
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger, } from "@/components/ui/popover"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useSelector } from 'react-redux'
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { useDispatch, useSelector } from 'react-redux'
+import { USER_API_END_POINT } from '@/utils/constant'
+import { setUser } from '@/Redux/authslice'
+import axios from 'axios'
+import { toast } from 'sonner'
 
 function Navbar() {
-  const { user } = useSelector(store => store.auth);
+  const { user } = useSelector(store => store.auth)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.post(`${USER_API_END_POINT}/logout`, {}, { withCredentials: true })
+      const ok = res?.data?.success || res?.data?.sucess
+
+      if (ok) {
+        dispatch(setUser(null))
+        navigate('/')
+        toast.success(res?.data?.message || 'Logged out successfully')
+      } else {
+        toast.error(res?.data?.message || 'Logout failed')
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error?.response?.data?.message || 'Logout failed')
+    }
+  }
+
   return (
     <div className="navbar">
 
-      {/* Logo */}
       <div className="logo">
         <img src={logo} alt="logo" />
       </div>
 
-      {/* Nav options */}
       <div className="options">
         <ul>
           <li><Link to='/'><a>Home</a></Link></li>
@@ -26,7 +49,6 @@ function Navbar() {
         </ul>
       </div>
 
-      {/* Right side */}
       <div className="auth-section">
         {!user ? (
           <>
@@ -39,7 +61,7 @@ function Navbar() {
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user?.profile.profilrPicture}
                     alt="user"
                   />
                 </Avatar>
@@ -48,7 +70,7 @@ function Navbar() {
               <PopoverContent align="start">
                 <div className="user-content flex gap-3">
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={user?.profile.profilrPicture} />
                   </Avatar>
 
                   <PopoverHeader>
@@ -63,7 +85,7 @@ function Navbar() {
                   <Button asChild variant="link" className="cursor-pointer">
                     <Link to="/profile">View Profile</Link>
                   </Button>
-                  <Button variant="destructive">Logout</Button>
+                  <Button variant="destructive" onClick={logoutHandler} className="cursor-pointer">Logout</Button>
                 </div>
               </PopoverContent>
             </Popover>
@@ -76,3 +98,6 @@ function Navbar() {
 }
 
 export default Navbar
+
+
+
