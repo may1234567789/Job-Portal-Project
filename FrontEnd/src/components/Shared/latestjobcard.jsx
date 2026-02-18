@@ -1,24 +1,31 @@
 import React from 'react'
 import { Badge } from "@/components/ui/badge"
 
-function LatestJobCard() {
+function LatestJobCard({ job }) {
+  const companyName = job?.company?.name || 'Company Name';
+  const place = job?.company?.location || job?.location || 'Place';
+  const title = job?.title || 'Job Title';
+  const desc = job?.description || '';
+  const jobType = job?.jobType || '';
+  const position = job?.position || '';
+  const salary = job?.salary || '';
   return (
     <article className="latestjob-card">
       <header className="latestjob-card-header">
         <div className="latestjob-company">
-          <p className="latestjob-company-name">Company Name</p>
-          <p className="latestjob-company-place">Place</p>
+          <p className="latestjob-company-name">{companyName}</p>
+          <p className="latestjob-company-place">{place}</p>
         </div>
-        <h3 className="latestjob-title">Job Title</h3>
+        <h3 className="latestjob-title">{title}</h3>
       </header>
 
-      <p className="latestjob-desc">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime, at vel! Minus quod officiis voluptates pariatur minima quasi aliquid soluta.</p>
+      <p className="latestjob-desc">{desc.length > 120 ? desc.slice(0, 120) + '...' : desc}</p>
 
       <footer className="latestjob-card-footer">
         <div className="latestjob-badges">
-          <Badge>Remote</Badge>
-          <Badge>Full-time</Badge>
-          <Badge>Senior</Badge>
+          <Badge variant="outline">{jobType}</Badge>
+          <Badge variant="outline">{position}</Badge>
+          <Badge variant="outline">{salary}</Badge>
         </div>
         <button className="latestjob-apply">Apply</button>
       </footer>

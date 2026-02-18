@@ -25,6 +25,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     bio: '',
     skills: '',
     file: null,
+    filePurpose: '',
   })
 
   const dispatch = useDispatch()
@@ -40,7 +41,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         skills: Array.isArray(user?.profile?.skills)
           ? user.profile.skills.join(', ')
           : user?.profile?.skills || '',
-        file: null,
+          file: null,
+          filePurpose: '',
       })
     }
   }, [user, open])
@@ -169,9 +171,31 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 accept="application/pdf"
                 onChange={(e) => {
                   const file = e.target.files[0]
-                  setInput({ ...input, file })
+                  setInput({ ...input, file, filePurpose: 'resume' })
                 }}
               />
+            </div>
+            <div className="grid grid-cols-1 items-center gap-2">
+              <Label htmlFor="profilePicture">Profile Picture</Label>
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 rounded-full overflow-hidden">
+                  <img
+                    src={input.file && input.filePurpose === 'profile' ? URL.createObjectURL(input.file) : (user?.profile?.profilePicture || 'https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg')}
+                    alt="profile-preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <Input
+                  type="file"
+                  id="profilePicture"
+                  name="profilePicture"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0]
+                    setInput({ ...input, file, filePurpose: 'profile' })
+                  }}
+                />
+              </div>
             </div>
           </form>
         </div>

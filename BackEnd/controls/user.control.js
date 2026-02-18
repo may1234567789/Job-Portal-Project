@@ -120,8 +120,15 @@ export const logout = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
+        console.log('UPDATE PROFILE request received');
+        console.log('req.user:', req.user);
+        console.log('req.body keys:', Object.keys(req.body || {}));
+        console.log('req.body:', req.body);
         if (!req.body) {
             return res.status(400).json({ message: 'Request body is required.' });
+        }
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: 'Unauthorized. Login required.', sucess: false });
         }
         const { username, email, phoneNumber, bio , skills } = req.body;
         if (!username || !email || !phoneNumber || !bio || !skills) {
@@ -150,9 +157,14 @@ export const updateProfile = async (req, res) => {
         user.phoneNumber = phoneNumber;
         user.profile.bio = bio;
         user.profile.skills = skillArray;
-        if(cloudResponse && file){
-            user.profile.resume = cloudResponse.secure_url;
-            user.profile.resumeOriginalName = file.originalname;
+        if (cloudResponse && file) {
+            const purpose = req.body.filePurpose || req.body.filePurpose?.toString?.() || '';
+            if (purpose === 'profile' || purpose === 'profilePicture') {
+                user.profile.profilePicture = cloudResponse.secure_url;
+            } else {
+                user.profile.resume = cloudResponse.secure_url;
+                user.profile.resumeOriginalName = file.originalname;
+            }
         }
 
         await user.save();

@@ -10,11 +10,12 @@ const useGetAllJobs = () => {
     const fetchAllJobs = async () => {
         try{
             const res = await axios.get(`${JOB_API_END_POINT}/get`,{withCredentials:true});
-            if(res.data.sucess){
-                dispatch(setAllJobs(res.data.jobs))
+            const ok = res.data.success || res.data.sucess;
+            if (ok) {
+              dispatch(setAllJobs(res.data.jobs || []));
             }
-        }catch(e){
-            console.log(error);
+        } catch (e) {
+          console.log(e);
         }
     }
     fetchAllJobs();

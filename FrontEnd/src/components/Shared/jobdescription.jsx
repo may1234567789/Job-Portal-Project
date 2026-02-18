@@ -1,8 +1,32 @@
-import React from 'react'
+import React, { use, useEffect } from 'react'
 import { Button } from '../ui/button'
+import { useParams } from 'react-router-dom';
+import useGetSingleJob from '@/hooks/useGetSinglejob';
+import { JOB_API_END_POINT } from '@/utils/constant';
+import axios from 'axios';
+import { setSingleJob } from '@/Redux/jobslice';
 
 const JobDescription = () => {
   const isApplied = true;
+  const params = useParams();
+  const jobId = params.id;
+  useGetSingleJob(jobId);
+
+  useEffect(()=>{
+    const fetchSingleJob = async () => {
+        try{
+            const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`,{withCredentials:true});
+            const ok = res.data.success || res.data.sucess;
+            if (ok) {
+              dispatch(setSingleJob(res.data.jobs || []));
+            }
+        } catch (e) {
+          console.log(e);
+        }
+    }
+    fetchSingleJob();
+  },[])
+
   return (
     <div class="bg-gray-100 min-h-screen flex items-center justify-center">
       <div class="bg-white w-full max-w-3xl rounded-xl shadow-lg p-6">

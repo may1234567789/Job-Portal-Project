@@ -27,7 +27,7 @@ const Profile = () => {
 
                 <div className="bg-indigo-600 p-6 text-white">
                     <Avatar className="h-24 w-24">
-                        <AvatarImage src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg" alt="profile" />
+                        <AvatarImage src={user?.profile?.profilePicture || "https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"} alt="profile" />
                     </Avatar>
                     <h2 className="text-2xl font-bold mt-4">{user?.username}</h2>
                     <p className="text-indigo-200">Frontend Developer</p>
