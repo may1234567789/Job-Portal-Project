@@ -6,7 +6,7 @@ import { Pointer, SearchIcon } from 'lucide-react'
 function HeroSection() {
     return (
         <div>
-            <div class="herosection">
+            <div className="herosection">
                 <div className="hero">
                     <div className="heroHeading"><h1>Find Your Dream <span className='text-blue-600'>Job </span>here</h1></div>
                     <p className='heroPara'>India's No. 1 Job Hunt Site</p>

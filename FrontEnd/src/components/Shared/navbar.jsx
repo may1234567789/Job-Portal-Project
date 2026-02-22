@@ -43,9 +43,9 @@ function Navbar() {
 
       <div className="options">
         <ul>
-          <li><Link to='/'><a>Home</a></Link></li>
-          <li><Link to='/browse'><a>Browse</a></Link></li>
-          <li><Link to='/job'><a>Job</a></Link></li>
+          <li><Link to='/'>Home</Link></li>
+          <li><Link to='/browse'>Browse</Link></li>
+          <li><Link to='/job'>Job</Link></li>
         </ul>
       </div>
 

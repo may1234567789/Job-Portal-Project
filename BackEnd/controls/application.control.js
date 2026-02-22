@@ -1,4 +1,5 @@
 import Application from '../models/application.model.js';
+import { Job } from '../models/job.model.js';
 
 export const applyJob = async (req, res) => {
     try{
@@ -22,6 +23,15 @@ export const applyJob = async (req, res) => {
             job: jobId,
             applicant: userId,
         });
+        
+        const job = await Job.findById(jobId);
+        if(!job){
+            return res.status(404).json({
+                message: "Job not found",
+                success: false
+            });
+        }
+        
         job.applications.push(newApplication._id);
         await job.save();
         return res.status(201).json({
@@ -32,6 +42,11 @@ export const applyJob = async (req, res) => {
 
     } catch (error) {
         console.error("Error applying for job:", error);
+        return res.status(500).json({
+            message: "Error applying for job",
+            success: false,
+            error: error.message
+        });
     }
 }
 

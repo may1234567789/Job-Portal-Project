@@ -4,10 +4,12 @@ import SingleJob from './singlejob'
 import './css/job.css'
 import { useSelector } from 'react-redux';
 import Navbar from './navbar';
+import useGetAllJobs from '@/hooks/useGetAllJobs';
 
 const jobArray = [1,2,3,4,5,6,7,8,9];
 
 const Job = () => {
+  useGetAllJobs();
   const {allJobs} = useSelector(store=>store.job)
   return (
      <div><Navbar/>
