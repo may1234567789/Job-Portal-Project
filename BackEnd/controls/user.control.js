@@ -1,6 +1,6 @@
 import User from '../Models/user.model.js';
 import bcrypt from 'bcryptjs';
-import { get } from 'http';
+// removed unused import
 import jwt from 'jsonwebtoken';
 import getDataUri from '../utils/datauri.js';
 import cloudinary from '../utils/cloundary.js';
@@ -35,7 +35,7 @@ export const register = async (req, res) => {
             console.log('found user:', { _id: user._id, email: user.email, username: user.username, phoneNumber: user.phoneNumber });
         }
         if (user) {
-            return res.status(400).json({ message: 'User already exists.',sucess:false });
+            return res.status(400).json({ message: 'User already exists.', success: false });
         }
         // Handle file upload after confirming user doesn't exist
         const file = req.file;
@@ -57,7 +57,7 @@ export const register = async (req, res) => {
                 profilePicture: profilePhotoUrl,
             }
         });
-        return  res.status(201).json({ message: 'User registered successfully.',sucess:true });
+        return  res.status(201).json({ message: 'User registered successfully.', success: true });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error.', success: false });
@@ -73,18 +73,20 @@ export const login = async (req, res) => {
         //Login logic
         const { email, password, role } = req.body;
         if (!email || !password || !role) {
-            return res.status(400).json({ message: 'All fields are required.', sucess: false });
+            return res.status(400).json({ message: 'All fields are required.', success: false });
         }
-        let user = await User.findOne({ email });
+        // normalize email to match registration normalization
+        const normalizedEmail = String(email || '').toLowerCase().trim();
+        let user = await User.findOne({ email: normalizedEmail });
         if (!user) {
-            return res.status(400).json({ message: 'User does not exist.', sucess: false });
+            return res.status(400).json({ message: 'User does not exist.', success: false });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid credentials.', sucess: false });
+            return res.status(400).json({ message: 'Invalid credentials.', success: false });
         }
         if (user.role !== role) {
-            return res.status(400).json({ message: 'Role mismatch.', sucess: false });
+            return res.status(400).json({ message: 'Role mismatch.', success: false });
         }
         const tokenData = {
             id: user.id,
@@ -101,7 +103,7 @@ export const login = async (req, res) => {
             profile: user.profile
         };
 
-        return res.status(200).cookie('token', token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({ message: 'Login successful.', sucess: true, user });
+        return res.status(200).cookie('token', token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({ message: 'Login successful.', success: true, user });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error.', success: false });
@@ -110,7 +112,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        return res.status(200).cookie('token', '', { maxAge: 0 }).json({ message: 'Logout successful.', sucess: true });
+        return res.status(200).cookie('token', '', { maxAge: 0 }).json({ message: 'Logout successful.', success: true });
     } 
     catch (error) {
         console.log(error);
@@ -128,13 +130,13 @@ export const updateProfile = async (req, res) => {
             return res.status(400).json({ message: 'Request body is required.' });
         }
         if (!req.user || !req.user.id) {
-            return res.status(401).json({ message: 'Unauthorized. Login required.', sucess: false });
+            return res.status(401).json({ message: 'Unauthorized. Login required.', success: false });
         }
         const { username, email, phoneNumber, bio , skills } = req.body;
         if (!username || !email || !phoneNumber || !bio || !skills) {
             return res.status(400).json({ 
                 message: 'All fields are required.', 
-                sucess: false });
+                success: false });
         };
         const file = req.file;
         let cloudResponse = null;
@@ -150,7 +152,7 @@ export const updateProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ 
                 message: 'User not found.', 
-                sucess: false });
+                success: false });
         }
         user.username = username;
         user.email = email;
@@ -179,7 +181,7 @@ export const updateProfile = async (req, res) => {
 
         return res.status(200).json({ 
             message: 'Profile updated successfully.', 
-            sucess: true, 
+            success: true, 
             user 
         });
 

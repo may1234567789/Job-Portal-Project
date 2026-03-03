@@ -3,20 +3,12 @@ import { Badge } from 'lucide-react';
 import './css/singlejob.css'
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-
-const SingleJob = () => {
-  const navigate = useNavigate();
-  const jobId = "iadchsjcdhjds";
-=======
-import Navbar from './navbar';
 import { useSelector } from 'react-redux';
+
 
 const SingleJob = ({job}) => {
   const navigate = useNavigate();
-  const jobId = "ewhfwwef"
-  const {job: jobFromStore} = useSelector(store => store.job);
->>>>>>> fix-job-portal
+
   return (
     
     <div>
@@ -48,13 +40,10 @@ const SingleJob = ({job}) => {
           <span className="value">₹{job?.salary || '8 LPA'}</span>
         </div>
 
-        
+        <Button className="apply-btn" onClick={() => navigate(`/description/${job?._id}`)}>Apply</Button>
 
-<<<<<<< HEAD
-        <Button className="apply-btn" onClick={() => navigate(`/description/${jobId}`)}>Apply</ Button>
-=======
         <Button onClick={() => navigate(`/description/${job?._id}`)}>Details</Button>
->>>>>>> fix-job-portal
+
       </div>
     </article>
 

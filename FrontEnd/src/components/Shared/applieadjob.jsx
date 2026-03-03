@@ -66,8 +66,4 @@ const AppliedJobs = () => {
   )
 }
 
-<<<<<<< HEAD
 export default AppliedJobs
-=======
-export default AppliedJobs
->>>>>>> fix-job-portal

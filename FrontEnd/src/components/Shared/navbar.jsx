@@ -4,19 +4,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../images/233377451.png'
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger, } from "@/components/ui/popover"
-<<<<<<< HEAD
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useSelector } from 'react-redux'
 
-function Navbar() {
-  const {user} = useSelector(store=>store.auth);
-=======
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useDispatch, useSelector } from 'react-redux'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/Redux/authslice'
 import axios from 'axios'
 import { toast } from 'sonner'
+
 
 function Navbar() {
   const { user } = useSelector(store => store.auth)
@@ -41,7 +36,7 @@ function Navbar() {
     }
   }
 
->>>>>>> fix-job-portal
+
   return (
     <div className="navbar">
 
@@ -50,11 +45,23 @@ function Navbar() {
       </div>
 
       <div className="options">
-        <ul>
+        {
+          user && user?.role === 'admin' ? (
+            <>
+            <ul>
+              <li><Link to='/admin/compnaies'>Companies</Link></li>
+              <li><Link to='/admin/jobs'>Jobs</Link></li>
+            </ul>
+            </>
+          ) : (
+            <ul>
           <li><Link to='/'>Home</Link></li>
           <li><Link to='/browse'>Browse</Link></li>
           <li><Link to='/job'>Job</Link></li>
         </ul>
+          )
+        }
+        
       </div>
 
       <div className="auth-section">
@@ -66,19 +73,22 @@ function Navbar() {
         ) : (
           <div className="user-logo">
             <Popover>
-              <PopoverTrigger asChild>
+                <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
-                  <AvatarImage
-                    src={user?.profile.profilrPicture}
-                    alt="user"
-                  />
+                  {user?.profile?.profilePicture
+                    ? <AvatarImage src={user.profile.profilePicture} alt="user" />
+                    : <AvatarFallback>{(user?.username || 'U')[0].toUpperCase()}</AvatarFallback>
+                  }
                 </Avatar>
               </PopoverTrigger>
 
               <PopoverContent align="start">
                 <div className="user-content flex gap-3">
                   <Avatar>
-                    <AvatarImage src={user?.profile.profilrPicture} />
+                    {user?.profile?.profilePicture
+                      ? <AvatarImage src={user.profile.profilePicture} />
+                      : <AvatarFallback>{(user?.username || 'U')[0].toUpperCase()}</AvatarFallback>
+                    }
                   </Avatar>
 
                   <PopoverHeader>
@@ -90,15 +100,10 @@ function Navbar() {
                 </div>
 
                 <div className="user-buttons flex flex-col gap-2 mt-4">
-<<<<<<< HEAD
-                  <Button variant="link"><Link to='/profile'>View Profile</Link></Button>
-                  <Button variant="destructive">Logout</Button>
-=======
                   <Button asChild variant="link" className="cursor-pointer">
                     <Link to="/profile">View Profile</Link>
                   </Button>
                   <Button variant="destructive" onClick={logoutHandler} className="cursor-pointer">Logout</Button>
->>>>>>> fix-job-portal
                 </div>
               </PopoverContent>
             </Popover>

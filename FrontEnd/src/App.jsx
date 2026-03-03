@@ -6,11 +6,8 @@ import Job from './components/Shared/job.jsx'
 import Browse from './components/Shared/browse.jsx'
 import './App.css'
 import Profile from './components/Shared/profile.jsx';
-<<<<<<< HEAD
-import JobDescription from './components/Shared/jobdecription.jsx';
-=======
 import JobDescription from './components/Shared/jobdescription.jsx';
->>>>>>> fix-job-portal
+
 
 const appRouter = createBrowserRouter([
   {
@@ -40,13 +37,18 @@ const appRouter = createBrowserRouter([
   {
     "path": "/profile",
     "element": <Profile />
-<<<<<<< HEAD
-=======
+
   },
   {
     "path": "/description/:id",
     "element": <JobDescription />
->>>>>>> fix-job-portal
+  },
+  {
+    "path":"/admin/companies",
+    "element":<Companies/>
+  },
+  {    "path":"/admin/companycreate",
+    "element":<CreateCompany/>
   }
 ]);
 
