@@ -3,16 +3,28 @@ import Navbar from '../Shared/navbar'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
-import { COMPANY_API_END_POINT } from '../../config';
+import { COMPANY_API_END_POINT } from '@/utils/constant';
+import { useDispatch } from 'react-redux';
+import { setSingleCompany } from '@/Redux/companyslice';
 
 function CreateCompany() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [companyName, setCompanyName] = React.useState("");
     const registerCompany = async () => {
         try{
             const res = await axios.post(`${COMPANY_API_END_POINT}/register`, {
-                companyName: companyName
-        });
+                companyName: companyName},
+            {headers:{
+                    "Content-Type": "application/json"
+                }});
+            if(res?.data?.success){
+                dispatch(setSingleCompany(res?.data?.company));
+                toast.success("Company created successfully!");
+                const companyId = res?.data?.companyId;
+                navigate(`/admin/companies/${companyId}`);
+            }
+            
         }catch(error){
             console.error("Error creating company:", error);
             toast.error("Failed to create company. Please try again.");

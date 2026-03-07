@@ -1,7 +1,8 @@
-import { Edit2, MoreHorizontal, Table } from 'lucide-react'
+import { Edit2, MoreHorizontal } from 'lucide-react'
 import React from 'react'
-import { TableCaption } from '../ui/table'
-import { Avatar } from 'radix-ui'
+import { Table, TableCaption, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/table'
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 
 function ComapniesTable() {
   return (

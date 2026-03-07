@@ -1,5 +1,5 @@
 import React from 'react'
-import { Badge } from 'lucide-react';
+import { Badge } from '../ui/badge';
 import './css/singlejob.css'
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
