@@ -17,7 +17,7 @@ function CompanySetup() {
         website: "",
         file:null
     });
-    const [singleCompany] = useSelector(store=> store.company);
+    const { singleCompany } = useSelector(store=> store.company);
     const [loading, setLoading] = React.useState(false);
     const params = useParams();
     const navigate = useNavigate();

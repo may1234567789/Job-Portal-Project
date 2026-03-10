@@ -49,8 +49,7 @@ function Navbar() {
           user && user?.role === 'admin' ? (
             <>
             <ul>
-              <li><Link to='/admin/compnaies'>Companies</Link></li>
-              <li><Link to='/admin/jobs'>Jobs</Link></li>
+              <li><Link to='/admin/companies'>Companies</Link></li>
             </ul>
             </>
           ) : (

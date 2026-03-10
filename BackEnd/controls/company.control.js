@@ -74,8 +74,11 @@ export const getCompanyById = async (req, res) => {
 export const updateCompanyById = async (req, res) => {
     try{
         const companyId = req.params.id;
+        const userId = req.user.id;
+        const fileUri = getDataUri(req.file);
+        const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content);
         const {name, description, website, location} = req.body;
-        const updateData = {name, description, website, location};
+        const updateData = {name, description, website, location, file: cloudinaryResponse.secure_url};
         const company = await Company.findByIdAndUpdate(companyId, updateData, {new:true});
         if(!company){
             return res.status(404).json({
