@@ -16,11 +16,11 @@ const useGetAllCompanies = () => {
               dispatch(setCompanies(res.data.companies || []));
             } else {
               console.log('API returned false success');
-              dispatch(setCompanies(null));
+              dispatch(setCompanies([]));
             }
         } catch (e) {
           console.log('Error fetching company:', e);
-          dispatch(setCompanies(null));
+          dispatch(setCompanies([]));
         }
     }
     fetchCompanies();

@@ -7,7 +7,9 @@ import { ArrowLeft } from 'lucide-react'
 import { COMPANY_API_END_POINT } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import useGetCompanyById from '@/hooks/useGetCompanyById';
+import { setSingleCompany } from '@/Redux/companyslice';
 
 function CompanySetup() {
     const [input, setInput] = React.useState({
@@ -18,26 +20,31 @@ function CompanySetup() {
         file:null
     });
     const { singleCompany } = useSelector(store=> store.company);
+    const dispatch = useDispatch();
     const [loading, setLoading] = React.useState(false);
     const params = useParams();
     const navigate = useNavigate();
+    useGetCompanyById(params.id);
+
     const changeHandler = (e) => {
         setInput((prev) => ({...prev, [e.target.name]: e.target.value}));
     }
     const changeFileHandler = (e) => {
-        const file = e.target.files?.[0];
-        setInput((prev) => ({...prev, file: e.target.files[0]}));
+        const file = e.target.files?.[0] || null;
+        setInput((prev) => ({...prev, file}));
 
     }
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log(input);
+        setLoading(true);
         const formData = new FormData();
         formData.append("companyName", input.companyName);
         formData.append("description", input.description);
         formData.append("location", input.location);
         formData.append("website", input.website);
-        formData.append("file", input.file);
+        if (input.file) {
+            formData.append("file", input.file);
+        }
         try{
             const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, {
                 headers: {
@@ -46,22 +53,24 @@ function CompanySetup() {
                 withCredentials: true
             });
             if(res.data.success){
+                dispatch(setSingleCompany(res.data.company));
                 toast.success(res.data.message);
                 navigate("/admin/companies");
             }
-            console.log(res);
         } catch(err){
             console.log(err);
             toast.error(err.response?.data?.message || "Something went wrong");
+        } finally {
+            setLoading(false);
         }
     }
     useEffect( ()=>{
         setInput({
-            companyName: singleCompany?.companyName || "",
+            companyName: singleCompany?.companyName || singleCompany?.name || "",
             description: singleCompany?.description || "",
             location: singleCompany?.location || "",
             website: singleCompany?.website || "",
-            file: singleCompany?.file || null
+            file: null
         })
     },[singleCompany])
 
@@ -72,7 +81,7 @@ function CompanySetup() {
         <div className="max-w-4xl mx-auto p-4">
             <form onSubmit={submitHandler}>
                 <div className="mb-4">
-                <Button onClick={() => navigate("/admin/companies")} className="px-4 py-2 bg-blue-500 text-white rounded">
+                <Button type="button" onClick={() => navigate("/admin/companies")} className="px-4 py-2 bg-blue-500 text-white rounded">
                     <ArrowLeft />
                     <span>Back to Companies</span>
                 </Button>
@@ -123,18 +132,18 @@ function CompanySetup() {
                 </div>
 
                 <div>
-                <Label className='text-2xl font-bold mb-4'>Website</Label>
+                <Label className='text-2xl font-bold mb-4'>Logo</Label>
                 <input 
                 type="file" 
                 accept="image/*"
                 onChange={changeFileHandler} 
-                name="website"
+                name="file"
                 />
                 </div>
 
                 </div>
-                <Button className="px-4 py-2 bg-green-500 text-white rounded">
-                    Update
+                <Button type="submit" disabled={loading} className="px-4 py-2 bg-green-500 text-white rounded">
+                    {loading ? "Updating..." : "Update"}
                 </Button>
             </form>
             </div>

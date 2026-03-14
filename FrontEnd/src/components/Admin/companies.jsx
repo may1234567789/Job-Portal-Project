@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Navbar from '../Shared/navbar'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import CompaniesTable from './companytable'
 import useGetAllCompanies from '@/hooks/useGetAllCompanies'
+import { setSearchCompanyByText } from '@/Redux/companyslice'
 
 function Companies() {
-    const navigate = useNavigate();
     useGetAllCompanies();
-    const { companies } = useSelector(store => store.company);
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const [input, setInput] = React.useState("");
+
+    useEffect(() => {
+        dispatch(setSearchCompanyByText(input));
+    }, [dispatch, input])
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
@@ -28,6 +34,7 @@ function Companies() {
                             <Input
                                 className="w-full"
                                 placeholder="Search companies by name..."
+                                onChange={(e) => setInput(e.target.value)}
                             />
                         </div>
                         <Button 

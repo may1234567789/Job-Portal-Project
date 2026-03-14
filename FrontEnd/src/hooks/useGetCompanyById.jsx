@@ -1,4 +1,3 @@
-import { setAllJobs } from '@/Redux/jobslice';
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { COMPANY_API_END_POINT } from '@/utils/constant';

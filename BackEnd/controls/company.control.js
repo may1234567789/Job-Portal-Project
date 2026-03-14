@@ -1,4 +1,6 @@
 import { Company } from '../Models/company.model.js';
+import getDataUri from '../utils/datauri.js';
+import cloudinary from '../utils/cloundary.js';
 
 export const createCompany = async (req, res) => {
     try {
@@ -75,11 +77,25 @@ export const updateCompanyById = async (req, res) => {
     try{
         const companyId = req.params.id;
         const userId = req.user.id;
-        const fileUri = getDataUri(req.file);
-        const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content);
-        const {name, description, website, location} = req.body;
-        const updateData = {name, description, website, location, file: cloudinaryResponse.secure_url};
-        const company = await Company.findByIdAndUpdate(companyId, updateData, {new:true});
+        const { companyName, description, website, location } = req.body;
+        const updateData = {
+            name: companyName,
+            description,
+            website,
+            location
+        };
+
+        if (req.file) {
+            const fileUri = getDataUri(req.file);
+            const cloudinaryResponse = await cloudinary.uploader.upload(fileUri.content);
+            updateData.logo = cloudinaryResponse.secure_url;
+        }
+
+        const company = await Company.findOneAndUpdate(
+            { _id: companyId, userId },
+            updateData,
+            { new: true }
+        );
         if(!company){
             return res.status(404).json({
                 message:'Company not found.',
@@ -93,5 +109,35 @@ export const updateCompanyById = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: 'Internal server error.',
+            success: false
+        });
+    }
+}
+
+export const deleteCompanyById = async (req, res) => {
+    try {
+        const companyId = req.params.id;
+        const userId = req.user.id;
+
+        const company = await Company.findOneAndDelete({ _id: companyId, userId });
+        if (!company) {
+            return res.status(404).json({
+                message: 'Company not found.',
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Company deleted successfully.',
+            success: true
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Internal server error.',
+            success: false
+        });
     }
 }

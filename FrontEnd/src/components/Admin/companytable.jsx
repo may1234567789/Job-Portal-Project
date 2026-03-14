@@ -1,24 +1,54 @@
 import { Edit2, MoreHorizontal, Trash2 } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { toast } from 'sonner'
 import { Table, TableCaption, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/table'
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { setSingleCompany } from '@/Redux/companyslice'
+import { COMPANY_API_END_POINT } from '@/utils/constant'
+import { setCompanies, setSingleCompany } from '@/Redux/companyslice'
 
 function ComapniesTable() {
-  const { companies } = useSelector(store => store.company);
+  const { companies, searchCompanyByText } = useSelector(store => store.company);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const companyList = Array.isArray(companies) ? companies : [];
+  const [filterCompany, setFilterCompany] = React.useState(companyList);
+
+  useEffect(() => {
+    const searchText = typeof searchCompanyByText === 'string' ? searchCompanyByText.toLowerCase() : '';
+    const filtered = companyList.filter(company =>
+      (company?.companyName || company?.name || '').toLowerCase().includes(searchText)
+    );
+    setFilterCompany(filtered);
+  }, [companyList, searchCompanyByText]);
 
   const handleEdit = (company) => {
     dispatch(setSingleCompany(company));
     navigate(`/admin/companies/${company._id}`);
   };
 
+  const handleDelete = async (companyId) => {
+    try {
+      const res = await axios.delete(`${COMPANY_API_END_POINT}/delete/${companyId}`, {
+        withCredentials: true
+      });
+
+      if (res?.data?.success) {
+        const updatedCompanies = companyList.filter(company => company._id !== companyId);
+        dispatch(setCompanies(updatedCompanies));
+        toast.success(res.data.message || 'Company deleted successfully');
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || 'Failed to delete company');
+    }
+  };
+
   const getInitials = (name) => {
-    return name
+    return (name || 'NA')
       .split(' ')
       .map(word => word[0])
       .join('')
@@ -35,7 +65,7 @@ function ComapniesTable() {
     });
   };
 
-  if (!companies || companies.length === 0) {
+  if (companyList.length === 0) {
     return (
       <div className="w-full">
         <Table>
@@ -66,17 +96,17 @@ function ComapniesTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {companies.map((company) => (
+                {filterCompany.map((company) => (
                   <TableRow key={company._id} className="hover:bg-gray-50 border-b transition-colors">
                     <TableCell>
                         <Avatar className="h-10 w-10">
                             <AvatarImage src={company.logo} alt={company.companyName}/>
                             <AvatarFallback className="bg-blue-100 text-blue-600">
-                              {getInitials(company.companyName)}
+                              {getInitials(company?.companyName || company?.name)}
                             </AvatarFallback>
                         </Avatar>
                     </TableCell>
-                    <TableCell className="font-medium text-gray-900">{company.companyName}</TableCell>
+                    <TableCell className="font-medium text-gray-900">{company?.companyName || company?.name || 'Unnamed Company'}</TableCell>
                     <TableCell className="text-gray-600">{formatDate(company.createdAt)}</TableCell>
                     <TableCell className="text-right">
                         <Popover>
@@ -93,7 +123,9 @@ function ComapniesTable() {
                                         <Edit2 className="h-4 w-4"/>
                                         <span>Edit</span>
                                     </button>
-                                    <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors">
+                                    <button
+                                      onClick={() => handleDelete(company._id)}
+                                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors">
                                         <Trash2 className="h-4 w-4"/>
                                         <span>Delete</span>
                                     </button>
