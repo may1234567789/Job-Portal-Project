@@ -18,7 +18,7 @@ export const postJob = async (req, res) => {
             location,
             salary,
             experience,
-            postedBy: userId,
+            createdBy: userId,
             postedAt: new Date(),
             requirements: requirements.split(','),
             jobType,
@@ -65,7 +65,10 @@ export const getAllJobs = async (req, res) => {
 export const getJobById = async (req, res) => {
     try{
         const jobId = req.params.id;
-        const job = await Job.findById(jobId).populate({path : 'applications'});
+        const job = await Job.findById(jobId).populate([
+            { path: 'applications' },
+            { path: 'company', select: 'name location' }
+        ]);
         if(!job){
             return res.status(404).json({
                 message: "Job not found",
@@ -85,7 +88,7 @@ export const getJobById = async (req, res) => {
 export const getAdminJobs = async (req, res) => {
     try {
         const userId = req.user.id;
-        const jobs = await Job.find({ createdBy: userId }).populate('company', 'name location').exec();
+        const jobs = await Job.find({ createdBy: userId }).populate('company', 'name location').sort({ createdAt: -1 }).exec();
         if(!jobs){
             return res.status(404).json({
                 message: "No jobs found for this admin",
@@ -99,5 +102,82 @@ export const getAdminJobs = async (req, res) => {
         });
     } catch (error) {
         console.log("Error fetching admin jobs:", error);
+    }
+}
+
+export const updateJobById = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const userId = req.user.id;
+        const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
+
+        if (!title || !description || !location || !salary || !experience || !companyId || !position || !jobType || !requirements) {
+            return res.status(400).json({
+                message: "Missing required fields",
+                success: false
+            });
+        }
+
+        const updatedJob = await Job.findOneAndUpdate(
+            { _id: jobId, createdBy: userId },
+            {
+                title,
+                description,
+                requirements: typeof requirements === 'string' ? requirements.split(',').map((item) => item.trim()).filter(Boolean) : requirements,
+                salary,
+                location,
+                jobType,
+                experience,
+                position,
+                company: companyId
+            },
+            { new: true }
+        ).populate('company', 'name location');
+
+        if (!updatedJob) {
+            return res.status(404).json({
+                message: "Job not found",
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: "Job updated successfully",
+            success: true,
+            job: updatedJob
+        });
+    } catch (error) {
+        console.log("Error updating job:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+}
+
+export const deleteJobById = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const userId = req.user.id;
+
+        const job = await Job.findOneAndDelete({ _id: jobId, createdBy: userId });
+
+        if (!job) {
+            return res.status(404).json({
+                message: "Job not found",
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: "Job deleted successfully",
+            success: true
+        });
+    } catch (error) {
+        console.log("Error deleting job:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
     }
 }
