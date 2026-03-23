@@ -34,7 +34,7 @@ function CreateCompany() {
             if(res?.data?.success){
                 dispatch(setSingleCompany(res?.data?.company));
                 toast.success("Company created successfully!");
-                const companyId = res?.data?.companyId;
+                const companyId = res?.data?.companyId || res?.data?.company?._id;
                 navigate(`/admin/companies/${companyId}`);
             }
             

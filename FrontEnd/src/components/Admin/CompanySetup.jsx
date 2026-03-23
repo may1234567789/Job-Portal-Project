@@ -25,6 +25,7 @@ function CompanySetup() {
     const params = useParams();
     const navigate = useNavigate();
     useGetCompanyById(params.id);
+    const companyId = params.id;
 
     const changeHandler = (e) => {
         setInput((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -36,6 +37,10 @@ function CompanySetup() {
     }
     const submitHandler = async (e) => {
         e.preventDefault();
+        if (!companyId) {
+            toast.error("Company id is missing. Please reopen the company from the companies list.");
+            return;
+        }
         setLoading(true);
         const formData = new FormData();
         formData.append("companyName", input.companyName);
@@ -46,7 +51,7 @@ function CompanySetup() {
             formData.append("file", input.file);
         }
         try{
-            const res = await axios.put(`${COMPANY_API_END_POINT}/update/${params.id}`, formData, {
+            const res = await axios.put(`${COMPANY_API_END_POINT}/update/${companyId}`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 },

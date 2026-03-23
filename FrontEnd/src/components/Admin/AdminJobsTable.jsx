@@ -134,6 +134,10 @@ function AdminJobsTable() {
                         <span>Delete</span>
                       </button>
                     </div>
+                    <div onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded transition-colors mt-1">
+                      <Eye className="h-4 w-4" />
+                      <span>Applicants</span>
+                    </div>
                   </PopoverContent>
                 </Popover>
               </TableCell>

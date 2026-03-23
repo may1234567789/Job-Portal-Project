@@ -7,6 +7,11 @@ import { setSingleCompany } from '@/Redux/companyslice';
 const useGetCompanyById = (id) => {
   const dispatch = useDispatch();
   useEffect(()=>{
+    if (!id || id === "undefined") {
+      dispatch(setSingleCompany(null));
+      return;
+    }
+
     const fetchCompany = async () => {
         try{
             const res = await axios.get(`${COMPANY_API_END_POINT}/get/${id}`,{withCredentials:true});

@@ -1,5 +1,6 @@
 import SingleJob from "@/components/Shared/singlejob";
 import { createSlice } from "@reduxjs/toolkit";
+import { setAllApplicants } from "./applicationslice";
 
 const jobSlice = createSlice({
     name: "job",
@@ -9,6 +10,7 @@ const jobSlice = createSlice({
         SingleJob: null,
         isApplied: false,
         searchJobByText: "",
+        allAppliedJobs: []
     },
     reducers: {
         setAllJobs: (state, action) => {
@@ -25,7 +27,10 @@ const jobSlice = createSlice({
         },
         setSearchJobByText: (state, action) => {
             state.searchJobByText = action.payload;
-        }
+        },
+        setAllAppliedJobs: (state, action) => {
+            state.allAppliedJobs = action.payload;
+        },
 
     },
 });

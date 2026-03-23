@@ -1,6 +1,9 @@
 import { Company } from '../Models/company.model.js';
 import getDataUri from '../utils/datauri.js';
 import cloudinary from '../utils/cloundary.js';
+import mongoose from 'mongoose';
+
+const isValidCompanyId = (companyId) => mongoose.Types.ObjectId.isValid(companyId);
 
 export const createCompany = async (req, res) => {
     try {
@@ -25,7 +28,8 @@ export const createCompany = async (req, res) => {
         return res.status(201).json({
             message:'Company created successfully.',
             success:true,
-            company
+            company,
+            companyId: company._id
         });
     } catch (error) {
         console.log(error);
@@ -56,6 +60,12 @@ export const getAllCompanies = async (req, res) => {
 export const getCompanyById = async (req, res) => {
     try{
         const companyId = req.params.id;
+        if (!isValidCompanyId(companyId)) {
+            return res.status(400).json({
+                message: 'Invalid company id.',
+                success: false
+            });
+        }
         const company = await Company.findById(companyId);
         if(!company){
             return res.status(404).json({
@@ -77,6 +87,12 @@ export const updateCompanyById = async (req, res) => {
     try{
         const companyId = req.params.id;
         const userId = req.user.id;
+        if (!isValidCompanyId(companyId)) {
+            return res.status(400).json({
+                message: 'Invalid company id.',
+                success: false
+            });
+        }
         const { companyName, description, website, location } = req.body;
         const updateData = {
             name: companyName,
@@ -120,6 +136,12 @@ export const deleteCompanyById = async (req, res) => {
     try {
         const companyId = req.params.id;
         const userId = req.user.id;
+        if (!isValidCompanyId(companyId)) {
+            return res.status(400).json({
+                message: 'Invalid company id.',
+                success: false
+            });
+        }
 
         const company = await Company.findOneAndDelete({ _id: companyId, userId });
         if (!company) {
