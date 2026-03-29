@@ -79,8 +79,10 @@ export const getAppliedJobs = async (req, res) => {
 export const getApplicants = async (req, res) => {
     try {
         const jobId = req.params.id;
-        const job = await Application.find({ job: jobId }).populate('applicant', 'name email resume').sort({ createdAt: -1 });
-        if(!job){
+        const job = await Application.find({ job: jobId })
+            .populate('applicant', 'username email phoneNumber profile.resume profile.resumeOriginalName profile.profilePicture')
+            .sort({ createdAt: -1 });
+        if(!job || job.length === 0){
             return res.status(404).json({
                 message: "No applicants found for this job",
                 success: false
@@ -92,7 +94,11 @@ export const getApplicants = async (req, res) => {
             job
         });
     } catch (error) {
-        console/log("Error fetching applicants:", error);
+        console.log("Error fetching applicants:", error);
+        return res.status(500).json({
+            message: "Error fetching applicants",
+            success: false
+        });
     }
 }
 
@@ -100,7 +106,7 @@ export const updateStatus = async (req, res) => {
     try {
         const applicationId = req.params.id;
         const { status } = req.body;
-        const validStatuses = ['pending', 'reviewed', 'accepted', 'rejected'];
+        const validStatuses = ['applied', 'under-process', 'rejected'];
         if(!validStatuses.includes(status)){
             return res.status(400).json({
                 message: "Invalid status value",

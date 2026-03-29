@@ -1,6 +1,4 @@
-import SingleJob from "@/components/Shared/singlejob";
 import { createSlice } from "@reduxjs/toolkit";
-import { setAllApplicants } from "./applicationslice";
 
 const jobSlice = createSlice({
     name: "job",
@@ -35,5 +33,5 @@ const jobSlice = createSlice({
     },
 });
 
-export const { setAllJobs, setSingleJob, setIsApplied, setAllAdminJobs, setSearchJobByText } = jobSlice.actions;
+export const { setAllJobs, setSingleJob, setIsApplied, setAllAdminJobs, setSearchJobByText, setAllAppliedJobs } = jobSlice.actions;
 export default jobSlice.reducer;

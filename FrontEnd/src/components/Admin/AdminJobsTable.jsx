@@ -1,4 +1,4 @@
-import { Edit2, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Edit2, Eye, MoreHorizontal, Trash2 } from 'lucide-react';
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';

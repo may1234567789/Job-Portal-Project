@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import {
   Table,
   TableBody,
@@ -12,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 const AppliedJobs = () => {
+  const { allAppliedJobs } = useSelector(store => store.job)
   return (
     <div className="w-full max-w-5xl mx-auto mt-8">
   <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
@@ -38,23 +40,23 @@ const AppliedJobs = () => {
       </TableHeader>
 
       <TableBody>
-        {[1, 2, 3, 4].map((item, index) => (
+        {allAppliedJobs.map((job, index) => (
           <TableRow
-            key={index}
+            key={job._id}
             className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             <TableCell className="font-medium text-slate-700 dark:text-slate-200">
-              17-07-2024
+              {job?.createdAt ? new Date(job.createdAt).toLocaleDateString() : "N/A"}
             </TableCell>
             <TableCell className="text-slate-700 dark:text-slate-200">
-              Web Developer
+              {job?.job?.title || "N/A"}
             </TableCell>
             <TableCell className="text-slate-700 dark:text-slate-200">
-              Google
+              {job?.job?.company?.name || "N/A"}
             </TableCell>
             <TableCell className="">
               <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
-        Selected
+                {job.status || "N/A"}
       </Badge>
             </TableCell>
           </TableRow>

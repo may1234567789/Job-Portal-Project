@@ -12,6 +12,7 @@ import CreateCompany from './components/Admin/comapnycreate.jsx';
 import CompanySetup from './components/Admin/CompanySetup.jsx';
 import AdminJobs from './components/Admin/jobs.jsx';
 import CreateJob from './components/Admin/jobcreate.jsx';
+import Applicants from './components/Admin/Applicants.jsx';
 
 
 const appRouter = createBrowserRouter([

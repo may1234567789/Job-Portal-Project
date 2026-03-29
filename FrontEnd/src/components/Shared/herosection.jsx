@@ -4,6 +4,7 @@ import { Input } from '../ui/input'
 import { Pointer, SearchIcon } from 'lucide-react'
 
 function HeroSection() {
+    const [query, setQuery] = React.useState("");
     return (
         <div>
             <div className="herosection">
@@ -15,6 +16,7 @@ function HeroSection() {
                             type="text"
                             placeholder="Search your dream job"
                             className="input"
+                            onChange={(e) => setQuery(e.target.value)}
                         />
                         <button className="searchBtn" aria-label="Search">
                             <SearchIcon />
