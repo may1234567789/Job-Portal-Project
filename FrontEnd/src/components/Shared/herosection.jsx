@@ -2,9 +2,18 @@ import React from 'react'
 import './css/herosection.css'
 import { Input } from '../ui/input'
 import { Pointer, SearchIcon } from 'lucide-react'
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function HeroSection() {
     const [query, setQuery] = React.useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleSearch = () => {
+        dispatch(setSearchQuery(query));
+        navigate("/search");
+    }
     return (
         <div>
             <div className="herosection">
@@ -17,6 +26,7 @@ function HeroSection() {
                             placeholder="Search your dream job"
                             className="input"
                             onChange={(e) => setQuery(e.target.value)}
+                            onClick={handleSearch}
                         />
                         <button className="searchBtn" aria-label="Search">
                             <SearchIcon />

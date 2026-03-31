@@ -1,7 +1,9 @@
 import React from 'react'
 import { Badge } from "@/components/ui/badge"
+import { useNavigate } from 'react-router-dom';
 
 function LatestJobCard({ job }) {
+  const navigate = useNavigate();
   const companyName = job?.company?.name || 'Company Name';
   const place = job?.company?.location || job?.location || 'Place';
   const title = job?.title || 'Job Title';
@@ -10,6 +12,7 @@ function LatestJobCard({ job }) {
   const position = job?.position || '';
   const salary = job?.salary || '';
   return (
+    <div onClick={() => navigate(`/job/${job._id}`)}>
     <article className="latestjob-card">
       <header className="latestjob-card-header">
         <div className="latestjob-company">
@@ -30,6 +33,7 @@ function LatestJobCard({ job }) {
         <button className="latestjob-apply">Apply</button>
       </footer>
     </article>
+    </div>
   )
 }
 
