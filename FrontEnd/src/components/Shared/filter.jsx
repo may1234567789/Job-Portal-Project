@@ -18,12 +18,25 @@ const filterData = [
 ]
 
 const Filter = () => {
+  const [selectedFilters, setSelectedFilters] = React.useState({
+    Location: "",
+    Industry: "",
+    Salary: ""
+  });
+  
+
+  const handleFilterChange = (filterType, value) => {
+    setSelectedFilters(prevFilters => ({
+      ...prevFilters,
+      [filterType]: value
+    }));
+  };
   return (
     <div>
       {filterData.map((data, filterIndex) => (
         <div key={data.filterType} className="mb-6">
           <h4 className="mb-3 font-semibold">{data.filterType}</h4>
-          <RadioGroup className="w-fit">
+          <RadioGroup className="w-fit" value={selectedFilters[data.filterType]} onValueChange={(value) => handleFilterChange(data.filterType, value)}>
             {data.array.map((item, itemIndex) => {
               const id = `${data.filterType}-${filterIndex}-${itemIndex}`
               return (
